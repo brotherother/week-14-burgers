@@ -1,36 +1,43 @@
 var express = require('express');
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
+var router = express.Router();
+var burger = require('../models/burger.js');
 
-var burger - 
 
-app.engine('handlebars', expressHandlebars({
-  defaultLayout: 'main'
-}));
-app.set('view engine', 'handlebars');
 
-app.use(bodyParser.urlencoded({
-    extended: false
-}));
-
-app.get('/', function(req, res) {
-  var msgIn = req.query.msg;
-  console.log(req.body);
-  res.render('home',{msg: msgIn});
+router.get('/', function(req,res) {
+  res.redirect('/burgers')
 });
 
-app.post('/register', function(req, res) {
-  var email = req.body.email;
-  var password = req.body.password;
-
-  User.create({
-    email: email,
-    password: password
-  }).then(function(result) {
-    res.redirect('/success');
-  }).catch(function(err) {
-    res.redirect('/?msg=' + err.message);
+router.get('/burgers', function(req,res) {
+  burger.all(function(data){
+    var hbsObject = {burgers : data}
+    console.log(hbsObject)
+    res.render('index', hbsObject);
   });
 });
 
-var app = express();
+router.post('/burgers/create', function(req,res) {
+  burger.create(['burger_name'], [req.body.burger_name], function(data){
+    res.redirect('/burgers')
+  });
+});
+
+router.put('/burgers/update/:id', function(req,res) {
+  var condition = 'id = ' + req.params.id;
+
+  console.log('condition', condition);
+
+  burger.update({'devoured' : req.body.devoured}, condition, function(data){
+    res.redirect('/burgers');
+  });
+});
+
+// router.delete('/burgers/delete/:id', function(req,res) {
+//   var condition = 'id = ' + req.params.id;
+
+//   burger.delete(condition, function(data){
+//     res.redirect('/burgers');
+//   });
+// });
+
+module.exports = router;
