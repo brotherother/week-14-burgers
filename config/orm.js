@@ -1,25 +1,28 @@
+/*
+Here is the O.R.M. where you write functions that takes inputs and conditions and turn them into database commands like SQL.
+*/
 var connection = require('../config/connection.js');
 
-function printQuestionMarks(num) {
-    var arr = [];
+function printQuestionMarks(num){
+  var arr = [];
 
-    for (var i = 0; i < num; i++) {
-        arr.push('?')
-    }
+  for (var i=0; i<num; i++){
+    arr.push('?')
+  }
 
-    return arr.toString();
+  return arr.toString();
 }
 
-function objToSql(ob) {
-    var arr = [];
+function objToSql(ob){
+  //column1=value, column2=value2,...
+  var arr = [];
 
-    for (var key in ob) {
-        arr.push(key + '=' + ob[key]);
-    }
+  for (var key in ob) {
+    arr.push(key + '=' + ob[key]);
+  }
 
-    return arr.toString();
+  return arr.toString();
 }
-
 
 var orm = {
     all: function(tableInput, cb) {
@@ -64,17 +67,6 @@ var orm = {
         cb(result);
       });
     }
-    // delete: function(table, condition, cb){
-    //   var queryString = 'DELETE FROM ' + table;
-    //   queryString = queryString + ' WHERE ';
-    //   queryString = queryString + condition;
-
-    //   connection.query(queryString, function(err, result) {
-    //     if (err) throw err;
-    //     cb(result);
-    //   });
-    // }
 };
-
 
 module.exports = orm;
